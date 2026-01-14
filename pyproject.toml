@@ -1,0 +1,20 @@
+[project]
+name = "oscar"
+version = "3.3"
+description = "OSCAR Earth system model"
+requires-python = ">=3.9"
+
+dependencies = [
+  "numpy",
+  "xarray",
+  "pandas",
+  "scipy",
+  "matplotlib",
+]
+
+[project.scripts]
+oscar = "oscar.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
