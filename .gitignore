@@ -33,6 +33,12 @@ ENV/
 archive/
 
 # ------------------
+# Data (full input data to be acquired from external sources, only keep bootstrap / sampled data in the repo)
+# ------------------
+data/input_data/
+data/output_data/
+
+# ------------------
 # Python cache / bytecode
 # ------------------
 __pycache__/
