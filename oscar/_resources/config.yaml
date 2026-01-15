@@ -1,0 +1,33 @@
+"""
+This is a placeholder for configurations related to standard workflows in the OSCAR model.
+"""
+
+# oscar/_resources/config.yaml
+# this is a placeholder for configuration settings related to standard workflows
+
+# oscar/_resources/config.yaml
+paths:
+  driver_filename_template: "{scenario}_{region}.nc"
+  bootstrap_initial_state: "init_2014.nc"
+  zenodo_base_url: "https://zenodo.org/..."
+
+default_run:
+  scenario: "SSP2"
+  # No paths here! The code will calculate them.
+
+# LEVEL 1: Immutable (Do not change)
+default_run:
+  region: "RCP_5reg"
+  n_mc: 200
+  scenario: "SSP2"
+  start_year: 2014
+
+# LEVEL 2: Templates (Defaults that can be overridden)
+standard_runs:
+  historical:
+    start_year: 1750
+    end_year: 2014
+    n_mc: 500
+  ssp_projection:
+    region: "AR6_10reg"
+    n_mc: 200
