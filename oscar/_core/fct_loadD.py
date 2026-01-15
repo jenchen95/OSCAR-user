@@ -1,6 +1,6 @@
 """
 Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2021; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2016
-Contributor(s): Thomas Gasser (gasser@iiasa.ac.at), Yann Quilcaille
+Contributor(s): Thomas Gasser (gasser@iiasa.ac.at), Yann Quilcaille, Biqing Zhu
 
 This software is a computer program whose purpose is to simulate the behavior of the Earth system, with a specific but not exclusive focus on anthropogenic climate change.
 
@@ -53,7 +53,12 @@ import warnings
 import numpy as np
 import xarray as xr
 
-from core_fct.fct_misc import aggreg_region, group_scenarios
+from .fct_misc import aggreg_region, group_scenarios
+
+# Handle input path
+from .._io.paths import get_in_dir
+# Define the central input_data path for this file
+INPUT_PATH = get_in_dir()
 
 
 ##################################################
@@ -125,8 +130,8 @@ def load_emissions_hist(mod_region,
     for data in datasets:
 
         ## load data if available
-        if os.path.isfile('input_data/drivers/emissions_' + data + '.nc'):
-            with xr.open_dataset('input_data/drivers/emissions_' + data + '.nc') as TMP: 
+        if os.path.isfile(INPUT_PATH / 'drivers' / f'emissions_{data}.nc'):
+            with xr.open_dataset(INPUT_PATH / 'drivers' / f'emissions_{data}.nc') as TMP: 
                 For1 = TMP.load()
 
         ## display message otherwise
@@ -278,8 +283,8 @@ def load_emissions_scen(mod_region,
     for data in datasets:
 
         ## load data if available
-        if os.path.isfile('input_data/drivers/emissions_' + data + '.nc'):
-            with xr.open_dataset('input_data/drivers/emissions_' + data + '.nc') as TMP: 
+        if os.path.isfile(INPUT_PATH / 'drivers' / f'emissions_{data}.nc'):
+            with xr.open_dataset(INPUT_PATH / 'drivers' / f'emissions_{data}.nc') as TMP: 
                 For1 = TMP.load()
 
         ## display message otherwise
@@ -434,8 +439,8 @@ def load_landuse_hist(mod_region,
     for data in datasets:
 
         ## load data if available
-        if os.path.isfile('input_data/drivers/land-use_' + data + '.nc'):
-            with xr.open_dataset('input_data/drivers/land-use_' + data + '.nc') as TMP: 
+        if os.path.isfile(INPUT_PATH / 'drivers' / f'land-use_{data}.nc'):
+            with xr.open_dataset(INPUT_PATH / 'drivers' / f'land-use_{data}.nc') as TMP: 
                 For1 = TMP.load()
 
         ## display message otherwise
@@ -538,8 +543,8 @@ def load_landuse_scen(mod_region,
     for data in datasets:
 
         ## load data if available
-        if os.path.isfile('input_data/drivers/land-use_' + data + '.nc'):
-            with xr.open_dataset('input_data/drivers/land-use_' + data + '.nc') as TMP: 
+        if os.path.isfile(INPUT_PATH / 'drivers' / f'land-use_{data}.nc'):
+            with xr.open_dataset(INPUT_PATH / 'drivers' / f'land-use_{data}.nc') as TMP: 
                 For1 = TMP.load()
 
         ## display message otherwise
@@ -634,11 +639,11 @@ def load_RFdrivers_hist(
     for data in datasets:
 
         ## load data if available
-        if os.path.isfile('input_data/drivers/' + data + '.nc'):
-            with xr.open_dataset('input_data/drivers/' + data + '.nc') as TMP: 
+        if os.path.isfile(INPUT_PATH / 'drivers' / f'{data}.nc'):
+            with xr.open_dataset(INPUT_PATH / 'drivers' / f'{data}.nc') as TMP: 
                 For1 = TMP.load()
-        elif os.path.isfile('input_data/observations/' + data + '.nc'):
-            with xr.open_dataset('input_data/observations/' + data + '.nc') as TMP: 
+        elif os.path.isfile(INPUT_PATH / 'observations' / f'{data}.nc'):
+            with xr.open_dataset(INPUT_PATH / 'observations' / f'{data}.nc') as TMP: 
                 For1 = TMP.load()
 
         ## display message otherwise
@@ -765,8 +770,8 @@ def load_RFdrivers_scen(
     for data in datasets:
 
         ## load data if available
-        if os.path.isfile('input_data/drivers/' + data + '.nc'):
-            with xr.open_dataset('input_data/drivers/' + data + '.nc') as TMP: 
+        if os.path.isfile(INPUT_PATH / 'drivers' / f'{data}.nc'):
+            with xr.open_dataset(INPUT_PATH / 'drivers' / f'{data}.nc') as TMP: 
                 For1 = TMP.load()
 
         ## display message otherwise
