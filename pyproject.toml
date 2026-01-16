@@ -10,7 +10,9 @@ dependencies = [
   "pandas",
   "scipy",
   "matplotlib",
-  "pyyaml"
+  "pyyaml",
+  "netcdf4>=1.7.2",
+  "h5netcdf>=1.8.0",
 ]
 
 [project.scripts]
