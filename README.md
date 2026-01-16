@@ -15,3 +15,12 @@ pip install git+https://github.com/bq-zhu/OSCAR-user.git
 import oscar
 oscar.run()
 ```
+## To uninstall
+```bash
+# Using uv
+uv pip uninstall oscar
+
+# Using pip
+pip uninstall oscar
+```
+
