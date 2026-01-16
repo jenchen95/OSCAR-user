@@ -27,7 +27,8 @@ from pathlib import Path
 # The absolute path to the OSCAR package root
 PACKAGE_ROOT = Path(__file__).resolve().parent.parent.parent
 
-# DEFAULT LOCATIONS -> path to be updated with data moving around #TODO
+# DEFAULT LOCATIONS
+DEFAULT_BOOTSTRAP_DIR = PACKAGE_ROOT / "oscar" / "_resources"/"bootstrap"
 DEFAULT_INPUT_DIR = PACKAGE_ROOT / "data" / "input_data"
 DEFAULT_OUTPUT_DIR = PACKAGE_ROOT / "data" / "results"
 
@@ -55,4 +56,9 @@ def get_in_dir(user_provided=None): #TODO: to be updated distinguishing raw and 
     Useful for fct_loadD.py to know where to look.
     """
     path = Path(user_provided) if user_provided else DEFAULT_INPUT_DIR
+    return path.expanduser().resolve()
+
+def get_bootstrap_dir():
+    """Returns the Path to the pre-initialized/compiled bootstrap data."""
+    path = DEFAULT_BOOTSTRAP_DIR
     return path.expanduser().resolve()

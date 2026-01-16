@@ -35,8 +35,7 @@ archive/
 # ------------------
 # Data (full input data to be acquired from external sources, only keep bootstrap / sampled data in the repo)
 # ------------------
-data/input_data/
-data/output_data/
+data/
 
 # ------------------
 # Python cache / bytecode

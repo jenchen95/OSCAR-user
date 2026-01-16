@@ -39,7 +39,7 @@ import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
 
-from core_fct.fct_misc import aggreg_region, fit_odr, check_odr
+from .fct_misc import aggreg_region, fit_odr, check_odr
 
 
 ##################################################

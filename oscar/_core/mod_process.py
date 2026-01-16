@@ -65,7 +65,7 @@ B. SUB-MODELS
 import numpy as np
 import xarray as xr
 
-from core_fct.cls_main import Model
+from .cls_main import Model
 
 
 ##################################################
