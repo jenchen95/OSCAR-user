@@ -1,31 +1,25 @@
 # OSCAR Configuration Settings
 # This file defines the 'Source of Truth' for Default and Standard runs.
 
-#TODO: to update this part
+
 paths:
-  driver_filename_template: "{scenario}_{region}.nc"
-  bootstrap_initial_state: "init_2014.nc"
-  zenodo_base_url: "https://zenodo.org/..."
+  zenodo_base_url: "https://zenodo.org/records/18290789/files/18290789.zip"
 
-default_run:
-  scenario: "SSP2"
-  # No paths here! The code will calculate them.
 
-# DEFAULT MODE RUN SETTINGS
+# STANDARD MODE RUN SETTINGS
 bootstrap_specs:
   region: "RCP_5reg"
   nMC: 50
   hist_start_year: 1750
   hist_end_year: 2014
-  scenario_default: "SSP2"
   scen_start_year: 2015
   scen_end_year: 2100
   var_full : ['D_Xhalo_lag', 'D_Cfroz', 'D_Tg', 'D_Td', 'D_Csoil1_bk', 'D_N2O_lag', 'D_Csoil2_bk', 'D_OHC', 'D_Xhalo', 'D_CH4', 'D_N2O', 'D_CO2', 'D_cveg', 'D_Chwp', 'D_CH4_lag', 'D_Aland', 'D_csoil2', 'D_Cveg_bk', 'D_pthaw', 'D_Cthaw', 'D_csoil1', 'D_Cosurf', 'D_Pg']
   var_select : ['D_Tg', 'D_CO2', 'D_CH4', 'D_N2O']
 
 #TODO: to populate this part
-# STANDARD MODE RUN Templates (Defaults that can be overridden)
-standard_runs:
+# Configured MODE RUN Templates (Defaults that can be overridden)
+configured_runs:
   historical:
     start_year: 1750
     end_year: 2014

@@ -1,33 +1,33 @@
 """
-OSCAR - Default Workflow
+OSCAR - standard Workflow
 Author: Biqing Zhu
 """
 import xarray as xr
 import matplotlib.pyplot as plt
 from .._core.mod_process import OSCAR
 from .._io.paths import get_bootstrap_dir, get_out_dir
-from .._utils.load_config import load_config  # Use your helper
+from .._utils.load_config import load_config
 
-def run_default(show_plot=True, run_model=True):
+def run_standard(show_plot=True, run_model=True):
     # 1. Load instructions from YAML
     cfg = load_config()['bootstrap_specs']
     b_dir = get_bootstrap_dir()
-    out_dir = get_out_dir() / "default_run"
+    out_dir = get_out_dir() / "standard_run"
     out_dir.mkdir(parents=True, exist_ok=True)
-    out_file = out_dir / "oscar_default_results.nc"
+    out_file = out_dir / "oscar_standard_results.nc"
 
     if run_model:
         # 2. Load the "Starter Kit"
         print("Loading forcing data and parameters...")
-        Par = xr.open_dataset(b_dir / "parameters_mc_default.nc").load()
-        For = xr.open_dataset(b_dir / "forcing_scen_default.nc").load()
-        Out_hist = xr.open_dataset(b_dir / "output_hist_default.nc").load()
-        Ini = xr.open_dataset(b_dir / "scen_initial_state_default.nc").load()
+        Par = xr.open_dataset(b_dir / "parameters_mc_standard.nc").load()
+        For = xr.open_dataset(b_dir / "forcing_scen_standard.nc").load()
+        Out_hist = xr.open_dataset(b_dir / "output_hist_standard.nc").load()
+        Ini = xr.open_dataset(b_dir / "scen_initial_state_standard.nc").load()
         
         For = For.sel(year=slice(cfg['scen_start_year'], cfg['scen_end_year']))
         
         # 3. Run the model projection
-        print(f"Running OSCAR projection for scenario {cfg['scenario_default']}...")
+        print(f"Running OSCAR projection for scenarios ...")
         Out_scen = OSCAR(Ini=Ini, Par=Par, For=For, nt=4)
         Out_scen_sel = Out_scen[cfg['var_select']]
         
