@@ -1,6 +1,6 @@
 """
 OSCAR - Bootstrap Generator
-Internal utility to freeze the 'Default' run state.
+Internal utility to freeze the 'standard' run state.
 """
 import xarray as xr
 
@@ -34,15 +34,15 @@ def generate_bootstrap():
     For_hist = For_hist.sel(year=slice(cfg['hist_start_year'], cfg['hist_end_year'])).fillna(0.)
     
     # 3. SAVE PARAMETERS & HISTORICAL FORCINGS
-    Par.to_netcdf(b_dir / "parameters_mc_default.nc")
+    Par.to_netcdf(b_dir / "parameters_mc_standard.nc")
     print("Par saved.")
-    For_hist.to_netcdf(b_dir / "forcing_hist_default.nc")
+    For_hist.to_netcdf(b_dir / "forcing_hist_standard.nc")
     print("For_hist saved.")
 
     # 4. Prepare & SAVE SCENARIO FORCINGS
     from .get_SSP_drivers import For_scen
     For_scen = For_scen.sel(year=slice(cfg['scen_start_year'], cfg['scen_end_year']))
-    For_scen.to_netcdf(b_dir / "forcing_scen_default.nc")
+    For_scen.to_netcdf(b_dir / "forcing_scen_standard.nc")
     print("For_scen saved.")
 
     # 5. RUN HISTORICAL & FREEZE STATE    
@@ -50,11 +50,11 @@ def generate_bootstrap():
     Out_hist = OSCAR(Ini=None, Par=Par, For=For_hist)
     # save Out_hist with a subset of variables to reduce size
     Out_hist_select = Out_hist[cfg['var_select']]
-    Out_hist_select.to_netcdf(b_dir / "output_hist_default.nc")
+    Out_hist_select.to_netcdf(b_dir / "output_hist_standard.nc")
     print("Out_hist saved.")
     # save last year state as initial condition for future runs
     Ini = Out_hist.isel(year=-1, drop=True)
-    Ini.to_netcdf(b_dir / "scen_initial_state_default.nc")
+    Ini.to_netcdf(b_dir / "scen_initial_state_standard.nc")
 
     print(f"Bootstrap generation complete in {b_dir}")
 

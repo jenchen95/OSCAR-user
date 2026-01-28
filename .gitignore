@@ -36,6 +36,8 @@ archive/
 # Data (full input data to be acquired from external sources, only keep bootstrap / sampled data in the repo)
 # ------------------
 data/
+devtools/
+data-user/
 
 # ------------------
 # Python cache / bytecode
@@ -82,4 +84,9 @@ nosetests.xml
 Thumbs.db
 
 # ==================================================
+# ------------------
+# Local user settings
+.oscar_settings.json
+# ------------------
+
 

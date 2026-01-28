@@ -1,9 +1,22 @@
 # OSCAR Configuration Settings
 # This file defines the 'Source of Truth' for Default and Standard runs.
 
+# Data version tracking for all model modes
+metadata:
+  input_data:
+    version: "2026.inp.rc1"
+    zenodo_id: "18406812"    # This record has the raw input file.
+
+  configured:
+    version: "2026.con.rc1"
+    zenodo_id: "18406911"    # This record has the configured libraries.
+    
+  customized:
+    version: "2026.cus.rc1"
+    zenodo_id: ""    # This record has templates and background drivers.
 
 paths:
-  zenodo_base_url: "https://zenodo.org/records/18290789/files/18290789.zip"
+  zenodo_base_url: "https://zenodo.org/api/records/"
 
 
 # STANDARD MODE RUN SETTINGS
@@ -14,16 +27,36 @@ bootstrap_specs:
   hist_end_year: 2014
   scen_start_year: 2015
   scen_end_year: 2100
+  scen_full: ['SSP1-1.9', 'SSP1-2.6', 'SSP2-4.5', 'SSP3-7.0', 'SSP3-7.0-LowNTCF', 'SSP4-3.4', 'SSP4-6.0', 'SSP5-3.4-OS', 'SSP5-8.5']
   var_full : ['D_Xhalo_lag', 'D_Cfroz', 'D_Tg', 'D_Td', 'D_Csoil1_bk', 'D_N2O_lag', 'D_Csoil2_bk', 'D_OHC', 'D_Xhalo', 'D_CH4', 'D_N2O', 'D_CO2', 'D_cveg', 'D_Chwp', 'D_CH4_lag', 'D_Aland', 'D_csoil2', 'D_Cveg_bk', 'D_pthaw', 'D_Cthaw', 'D_csoil1', 'D_Cosurf', 'D_Pg']
   var_select : ['D_Tg', 'D_CO2', 'D_CH4', 'D_N2O']
 
-#TODO: to populate this part
-# Configured MODE RUN Templates (Defaults that can be overridden)
-configured_runs:
-  historical:
-    start_year: 1750
-    end_year: 2014
-    n_mc: 500
-  ssp_projection:
-    region: "AR6_10reg"
-    n_mc: 200
+# Configured MODE RUN SETTINGS
+configured_options:
+  # 1. The Menu
+  hist_list: 
+    CMIP6: 2014
+    # CMIP7: 2020  <-- Uncomment this once CMIP7 drivers are verified
+  region_list: ["RCP_5reg", "RCP_10reg", "AR6_5reg", "AR6_10reg", "AR6_22reg"]
+  scen_list: ['SSP1-1.9', 'SSP1-2.6', 'SSP2-4.5', 'SSP3-7.0', 'SSP3-7.0-LowNTCF', 'SSP4-3.4', 'SSP4-6.0', 'SSP5-3.4-OS', 'SSP5-8.5']
+  # Simplified var_full for Version 1 -- Focus: Global Temperature, Greenhouse Gas Concentrations, and Major Carbon Fluxes
+  var_list: [
+    'D_Tg',      # Global surface temperature change
+    'D_CO2',     # Atmospheric CO2 concentration change
+    'D_CH4',     # Atmospheric CH4 concentration change
+    'D_N2O',     # Atmospheric N2O concentration change
+    'D_Focean',  # Net ocean carbon flux change
+    'D_Fland',   # Net land carbon flux change
+    'D_OHC',     # Ocean heat content change
+    'D_Eluc'     # CO2 emissions from land-use change
+  ]
+
+  projection_end_year: 2100
+  official_nMC: 500
+
+  # 2. Default starting points
+  defaults:
+    hist_type: "CMIP6"
+    region: "RCP_5reg"
+    scenario: ["SSP2-4.5"]
+    variables: ["D_Tg", "D_CO2"]

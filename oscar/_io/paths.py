@@ -1,64 +1,121 @@
 """
 OSCAR Path Management Utility
-
-This module centralizes all directory and file-path logic for the OSCAR model.
 Location: oscar/_io/paths.py
 
 Main Logic:
-    1. PACKAGE_ROOT: Identifies the top-level project folder (OSCAR/).
-    2. Inputs: Stable link to 'input_data' (drivers, observations).
-    3. Outputs: Manages results with automatic folder creation.
-
-Usage:
-    # 1. In data loading functions:
-    from .paths import get_in_dir
-    input_data_path = get_in_dir()
-
-
-    # 2. In the main run API:
-    from ._io.paths import get_out_dir
-    output_data_path = get_out_dir()
+    1. PACKAGE_ROOT: Identifies the repository root (OSCAR-user/).
+    2. Settings: Stores user preferences in PACKAGE_ROOT/.oscar_settings.json.
+    3. Bootstrap: Fixed internal path for 'standard' mode (small files).
+    4. Data Root: Resolved path for large scientific libraries (Configured mode).
 """
 
-# Imports
 import os
+import json
 from pathlib import Path
 
-# The absolute path to the OSCAR package root
+# 1. IDENTIFY PACKAGE ROOT
+# Path logic: oscar/_io/paths.py -> _io -> oscar -> OSCAR-user/
 PACKAGE_ROOT = Path(__file__).resolve().parent.parent.parent
 
-# DEFAULT LOCATIONS
-DEFAULT_BOOTSTRAP_DIR = PACKAGE_ROOT / "oscar" / "_resources"/"bootstrap"
-DEFAULT_INPUT_DIR = PACKAGE_ROOT / "data" / "input_data"
-DEFAULT_OUTPUT_DIR = PACKAGE_ROOT / "data" / "results"
+# 2. PERMANENT SETTINGS CONFIG (Local to the repository)
+# By saving here, deleting the repository removes all user traces.
+SETTINGS_FILE = PACKAGE_ROOT / ".oscar_settings.json"
+
+# 3. INTERNAL BOOTSTRAP LOCATION (Small files shipped with code)
+# Used for 'standard' mode
+INTERNAL_BOOTSTRAP_DIR = PACKAGE_ROOT / "oscar" / "_resources" / "bootstrap"
+
+def set_data_dir(path=None):
+    """
+    Sets the global data directory permanently for this user.
+    If no path is provided, it defaults to [Project Root]/data/
+    """
+    if path is None:
+        # Default option: Create/use 'data' folder in the repo root
+        target = PACKAGE_ROOT / "data"
+    else:
+        target = Path(path).expanduser().resolve()
+    
+    # Ensure the directory exists
+    target.mkdir(parents=True, exist_ok=True)
+    # Save to JSON
+    settings = {"data_dir": str(target)}
+    with open(SETTINGS_FILE, "w") as f:
+        json.dump(settings, f, indent=4)
+        
+    print(f"[OSCAR] User data directory set to: {target}")
+
+def get_user_data_dir() -> Path:
+    """
+    Retrieves the saved data directory from the local settings file.
+    Returns None if never set.
+    """
+    if SETTINGS_FILE.exists():
+        try:
+            with open(SETTINGS_FILE, "r") as f:
+                data = json.load(f)
+                return Path(data["data_dir"])
+        except (KeyError, json.JSONDecodeError):
+            return None
+    return None
+
+# --- PUBLIC PATH RESOLVERS ---
+
+def resolve_data_root(user_provided=None):
+    """
+    Finds the data library root.
+    Order of priority: 
+    1. Manual argument to function
+    2. Setting in .oscar_settings.json
+    3. Return None (Handled by run.py Welcome Guide)
+    """
+    root = user_provided or get_user_data_dir()
+    
+    if root is None:
+        # DO NOT raise ValueError here anymore. 
+        # Just return None so run.py can show the Welcome Guide.
+        return None
+        
+    return Path(root)
+
+def get_in_dir(user_provided=None):
+    """
+    Returns the Path to the raw input data (drivers, etc.).
+    Points to {data_root}/input_data/
+    """
+    # 1. Resolve the base data directory (saved setting or user arg)
+    root = resolve_data_root(user_provided)
+    
+    # 2. Point to the input_data subfolder
+    path = root / "input_data"
+    
+    return path.resolve()
+
+def get_bootstrap_dir():
+    """Returns the internal path for 'standard' mode bootstrap files."""
+    return INTERNAL_BOOTSTRAP_DIR.resolve()
 
 def get_out_dir(user_provided=None):
     """
-    Logic: User Arg > Environment Variable > Default
-    Ensures the directory exists before returning it.
+    Determines where model results should be saved.
+    Logic: User Argument > User Data Subfolder > Package Root Default.
     """
     if user_provided:
         path = Path(user_provided)
     else:
-        path = DEFAULT_OUTPUT_DIR
+        # Check if a persistent data directory is set
+        user_root = get_user_data_dir()
+        if user_root:
+            # Save results in the large data drive
+            path = user_root / "results"
+        else:
+            # Default fallback to the project root
+            path = PACKAGE_ROOT / "data" / "results"
 
-    # 3. CRITICAL: Expand ~ (user home) and make absolute
     path = path.expanduser().resolve()
-    
-    # 4. Auto-create the folder so the model doesn't crash on the first run
     path.mkdir(parents=True, exist_ok=True)
-    
     return path
 
-def get_in_dir(user_provided=None): #TODO: to be updated distinguishing raw and compiled input
-    """
-    Returns the Path object for input data.
-    Useful for fct_loadD.py to know where to look.
-    """
-    path = Path(user_provided) if user_provided else DEFAULT_INPUT_DIR
-    return path.expanduser().resolve()
-
-def get_bootstrap_dir():
-    """Returns the Path to the pre-initialized/compiled bootstrap data."""
-    path = DEFAULT_BOOTSTRAP_DIR
-    return path.expanduser().resolve()
+def get_configured_dir(data_dir=None):
+    """Entry point for all files used in configured mode."""
+    return resolve_data_root(data_dir) / "library" / "configured"

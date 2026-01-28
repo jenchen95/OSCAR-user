@@ -1,29 +1,59 @@
 # oscar/run.py
-from ._workflows import standard_run, configured_runs, customized_runs, advanced_runs
+from ._utils.help import show_info as _info
 
-def run(mode="default", **kwargs):
+def info(mode=None):
+    """Entry point for terminal-based help."""
+    return _info(mode)
+
+import sys
+from ._io.paths import resolve_data_root
+
+def run(mode="standard", **kwargs):
     """
     Main entry point for OSCAR simulations.
-
-    Modes:
-      - standard:   Instant run (2014-2100) using bootstrap starter-kit.
-      - configured: Scientific runs using official library (CMIP6/7 + SSPs).
-      - customized: Runs using user-provided external forcing data.
-      - advanced:   Sub-module execution and advanced model development.
     """
+    # 1. MODE: STANDARD (Instant verification using internal bootstrap)
     if mode == "standard":
+        from ._workflows import standard_run
         return standard_run.run_standard(**kwargs)
 
+    # 2. DATA CHECK (For scientific modes: configured, customized, advanced)
+    # This checks for a saved path OR a manually provided 'data_dir' argument.
+    data_root = resolve_data_root(kwargs.get('data_dir'))
+    
+    if data_root is None:
+        # --- THE WARM WELCOME GUIDE ---
+        width = 85
+        print("\n" + "="*width)
+        print(f"{' WELCOME TO OSCAR ':^85}")
+        print("="*width)
+        print("You have selected a mode that requires a designated home for the data library.")
+        print("To start your scientific research, please initialize your data folder once.")
+        
+        print("\nACTION: Run one of these commands in your terminal:")
+        print(f"  {'# To use the default [Project Root]/data:':<50}")
+        print("  python -c \"import oscar; oscar.set_data_dir()\"")
+        
+        print(f"\n  {'# To use a custom external drive:':<50}")
+        print("  python -c \"import oscar; oscar.set_data_dir('/path/to/your/drive')\"")
+        
+        print("\nOnce initialized, OSCAR will automatically manage and download required data.")
+        print("="*width + "\n")
+        
+        # Exit cleanly without a technical traceback
+        sys.exit(1)
+
+    # 3. SCIENTIFIC WORKFLOWS (Now guaranteed to have a data_root)
     if mode == "configured":
-        # Uses your pre-verified 'menu' of scenarios/regions/ensembles
+        from ._workflows import configured_runs
         return configured_runs.run_configured(**kwargs)
 
     if mode == "customized":
-        # Passes EVERYTHING to the flexible workflow
+        from ._workflows import customized_runs
         return customized_runs.run_customized(**kwargs)
 
     if mode == "advanced":
-        # Direct access to sub-modules for development
+        from ._workflows import advanced_runs
         return advanced_runs.run_advanced(**kwargs)
         
     raise ValueError(f"Unknown mode: {mode}")

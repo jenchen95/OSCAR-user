@@ -1,0 +1,61 @@
+# ==============================================================================
+# OSCAR VARIABLE REGISTRY
+# ==============================================================================
+# DESIGN PHILOSOPHY:
+# This file centralizes all scientific metadata (scientific names, long names, 
+# and units) away from the physical core engine (_core/).
+#
+# LONG-TERM ADVANTAGES:
+# 1. Separation of Concerns: Physics equations stay in _core/, while reporting 
+#    standards (CF-Conventions) stay here.
+# 2. Interoperability: To adopt a new standard (e.g., CMIP7), you can simply 
+#    swap this file for a 'cmip7_standard.yaml' without touching the physics.
+# 3. Maintainability: Non-Python experts can update variable descriptions 
+#    without risking bugs in the numerical solver.
+# ==============================================================================
+
+variables:
+  # --- CLIMATE INDICATORS ---
+  D_Tg:
+    sci_name: "ΔTg"
+    long_name: "Global surface temperature change"
+    unit: "K"
+    
+  D_OHC:
+    sci_name: "ΔOHC"
+    long_name: "Ocean heat content change"
+    unit: "ZJ"
+
+  # --- CONCENTRATIONS ---
+  D_CO2:
+    sci_name: "ΔCO2"
+    long_name: "Atmospheric CO2 concentration change"
+    unit: "PgC yr-1"
+
+  D_CH4:
+    sci_name: "ΔCH4"
+    long_name: "Atmospheric CH4 concentration change"
+    unit: "ppb"
+
+  D_N2O:
+    sci_name: "ΔN2O"
+    long_name: "Atmospheric N2O concentration change"
+    unit: "ppb"
+
+  # --- CARBON FLUXES ---
+  D_Focean:
+    sci_name: "ΔFn-ocean"
+    long_name: "Net ocean carbon flux change"
+    unit: "PgC yr-1"
+
+  D_Fland:
+    sci_name: "Fn-land"
+    long_name: "Net land carbon flux change"
+    unit: "PgC yr-1"
+
+  D_Eluc:
+    sci_name: "Eluc"
+    long_name: "CO2 emissions from land-use change"
+    unit: "PgC yr-1"
+
+# --- END OF REGISTRY ---
